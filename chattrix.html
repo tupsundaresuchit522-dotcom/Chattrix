@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chattrix — Meet. Talk. Connect.</title>
+<meta name="description" content="Chattrix pairs you with someone new for a text or video chat. Skip anytime. Report and block in one tap.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#2D2BFF;
+  --blue-deep:#1A18C9;
+  --paper:#F7F6FF;
+  --ink:#14123A;
+  --lilac:#DAD7FF;
+  --sun:#FFD84A;
+  --coral:#FF6B5B;
+  --mint:#3DDC97;
+  --radius:22px;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--ink);background:var(--paper);line-height:1.6;font-size:17px;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+header.nav{background:var(--blue);color:#fff}
+.nav-in{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+.logo{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.02em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;position:relative;display:inline-block}
+.logo-mark i{position:absolute;width:22px;height:22px;border-radius:50%;border:4px solid #fff}
+.logo-mark i:first-child{left:0;top:0}
+.logo-mark i:last-child{right:0;bottom:0;border-color:var(--sun)}
+.nav-links{display:flex;gap:28px;align-items:center;font-weight:500}
+.nav-links a{text-decoration:none;opacity:.9}
+.nav-links a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:999px;font-weight:600;font-size:17px;transition:transform .15s,background .15s}
+.btn:active{transform:scale(.97)}
+.btn-sun{background:var(--sun);color:var(--ink)}
+.btn-sun:hover{background:#ffe27a}
+.btn-ghost{background:rgba(255,255,255,.16);color:#fff}
+.btn-ghost:hover{background:rgba(255,255,255,.26)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{background:#2a2766}
+
+/* Hero */
+.hero{background:var(--blue);color:#fff;padding:24px 0 96px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(46px,7.4vw,92px);line-height:.95;letter-spacing:-.035em}
+.hero h1 span{display:block}
+.hero h1 span:nth-child(2){margin-left:.55em}
+.hero h1 span:nth-child(3){margin-left:1.1em}
+.hero p.lead{font-size:20px;max-width:30em;margin:28px 0 34px;color:#E6E4FF}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-note{margin-top:18px;font-size:14px;color:#CFCBFF}
+
+/* Demo */
+.demo{background:var(--paper);color:var(--ink);border-radius:30px;padding:14px;box-shadow:0 30px 60px -20px rgba(8,6,90,.55)}
+.stage{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{position:relative;aspect-ratio:3/4;border-radius:20px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.tile.you{background:linear-gradient(160deg,#8d8bff,#5a58ff)}
+.tile.them{background:var(--lilac);transition:background .35s}
+.avatar{width:46%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:clamp(28px,5vw,54px);color:var(--blue)}
+.tile .tag{position:absolute;left:10px;bottom:10px;background:rgba(20,18,58,.78);color:#fff;font-size:13px;font-weight:500;padding:4px 12px;border-radius:999px}
+.scan{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-weight:600}
+.tile.searching .avatar{display:none}
+.tile.searching .scan{display:flex}
+.dots{display:flex;gap:6px}
+.dots b{width:10px;height:10px;border-radius:50%;background:var(--blue);animation:bounce 1s infinite}
+.dots b:nth-child(2){animation-delay:.15s}
+.dots b:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-8px);opacity:1}}
+.live{position:absolute;top:10px;left:10px;display:none;align-items:center;gap:6px;background:rgba(20,18,58,.78);color:#fff;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--mint)}
+.tile.them.connected .live{display:flex}
+.chat{margin-top:10px;background:#fff;border-radius:20px;padding:14px;min-height:150px;max-height:190px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.chat .sys{align-self:center;font-size:13px;color:#6b68a0;text-align:center}
+.msg{max-width:80%;padding:8px 14px;border-radius:16px}
+.msg.in{background:var(--lilac);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.out{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.composer{display:flex;gap:8px;margin-top:10px}
+.composer input{flex:1;min-width:0;padding:13px 18px;border-radius:999px;border:2px solid var(--lilac);background:#fff;font:inherit;color:var(--ink)}
+.composer input:focus{outline:none;border-color:var(--blue)}
+.composer input:disabled{background:#efeeff}
+.controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.controls .btn{padding:12px 20px;font-size:16px;flex:1 1 auto}
+.btn-start{background:var(--blue);color:#fff}
+.btn-start:hover{background:var(--blue-deep)}
+.btn-skip{background:var(--sun);color:var(--ink)}
+.btn-skip:disabled,.btn-small:disabled,.composer button:disabled{opacity:.4;cursor:not-allowed}
+.btn-small{background:#fff;border:2px solid var(--lilac);color:var(--ink)}
+.btn-small:hover:not(:disabled){border-color:var(--coral);color:#b8281a}
+.demo-label{text-align:center;font-size:13px;color:#cfcbff;margin-top:14px}
+
+/* Video mode */
+.modebar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--lilac);border-radius:999px;padding:4px}
+.seg button{padding:8px 20px;border-radius:999px;font-weight:600;font-size:15px;color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.camctl{display:flex;gap:8px}
+.camctl .btn{padding:8px 16px;font-size:14px;background:#fff;border:2px solid var(--lilac);color:var(--ink)}
+.camctl .btn[aria-pressed="true"]{background:var(--mint);border-color:var(--mint)}
+.camctl .btn[data-off="true"]{background:var(--coral);border-color:var(--coral);color:#fff}
+.tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:none}
+.tile.you.cam-on video{display:block}
+.tile.you.cam-on .avatar{display:none}
+.tile .note{position:absolute;top:10px;right:10px;background:rgba(20,18,58,.78);color:#fff;font-size:12px;padding:4px 10px;border-radius:999px;display:none}
+.tile.them.connected.videoing .note{display:block}
+.tile.them.connected.videoing .avatar{box-shadow:0 0 0 0 rgba(45,43,255,.35);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(45,43,255,.35)}70%{box-shadow:0 0 0 22px rgba(45,43,255,0)}100%{box-shadow:0 0 0 0 rgba(45,43,255,0)}}
+.demo.text-mode .stage,.demo.text-mode .camctl{display:none}
+.demo.text-mode .chat{max-height:260px;min-height:220px}
+
+/* Sections */
+section{padding:96px 0}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,5vw,56px);line-height:1.02;letter-spacing:-.03em;max-width:14em}
+.sec-intro{max-width:34em;margin-top:18px;font-size:19px;color:#4b4880}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
+.step{background:#fff;border-radius:var(--radius);padding:32px;position:relative}
+.step:nth-child(2){background:var(--lilac)}
+.step:nth-child(3){background:var(--sun)}
+.step .n{font-family:var(--display);font-weight:800;font-size:64px;line-height:1;letter-spacing:-.04em;color:var(--blue)}
+.step:nth-child(3) .n{color:var(--ink)}
+.step h3{font-family:var(--display);font-size:24px;margin:14px 0 8px;letter-spacing:-.01em}
+
+.features{background:#fff}
+.feat-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;margin-top:56px}
+.feat{border-radius:var(--radius);padding:32px}
+.feat h3{font-family:var(--display);font-size:26px;letter-spacing:-.015em;margin-bottom:8px}
+.feat.a{grid-column:span 7;background:var(--blue);color:#fff}
+.feat.a p{color:#dcd9ff}
+.feat.b{grid-column:span 5;background:var(--lilac)}
+.feat.c{grid-column:span 5;background:var(--paper)}
+.feat.d{grid-column:span 7;background:var(--ink);color:#fff}
+.feat.d p{color:#cdcaf3}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.chip{padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.18);font-size:14px;font-weight:500}
+.feat.b .chip,.feat.c .chip{background:#fff}
+
+.safety{background:var(--ink);color:#fff}
+.safety h2{color:#fff}
+.safety .sec-intro{color:#cdcaf3}
+.safe-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 56px;margin-top:48px}
+.safe-item{padding:26px 0;border-top:1px solid rgba(255,255,255,.2)}
+.safe-item h3{font-family:var(--display);font-size:22px;margin-bottom:6px}
+.safe-item p{color:#cdcaf3}
+
+.cta{background:var(--sun);text-align:center}
+.cta h2{margin:0 auto;max-width:12em}
+.cta p{margin:18px auto 32px;max-width:28em;font-size:19px}
+
+footer{background:var(--paper);padding:48px 0;font-size:15px;color:#4b4880}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot nav{display:flex;gap:22px;flex-wrap:wrap}
+.foot .logo{color:var(--ink);font-size:22px}
+.foot .logo-mark i{border-color:var(--blue)}
+.foot .logo-mark i:last-child{border-color:var(--coral)}
+
+/* Modals */
+.overlay{position:fixed;inset:0;background:rgba(20,18,58,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.overlay.open{display:flex}
+.modal{background:var(--paper);color:var(--ink);border-radius:26px;padding:34px;max-width:440px;width:100%}
+.modal h3{font-family:var(--display);font-size:30px;letter-spacing:-.02em;line-height:1.1;margin-bottom:10px}
+.modal p{color:#4b4880;margin-bottom:22px}
+.modal .row{display:flex;gap:10px;flex-wrap:wrap}
+.modal .row .btn{flex:1 1 auto}
+.reasons{display:grid;gap:8px;margin-bottom:22px}
+.reasons label{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid var(--lilac);padding:12px 16px;border-radius:14px;cursor:pointer;font-weight:500}
+.reasons input{accent-color:var(--blue);width:18px;height:18px}
+.reasons label:has(input:checked){border-color:var(--blue)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:60}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:44px}
+  .steps{grid-template-columns:1fr}
+  .feat.a,.feat.b,.feat.c,.feat.d{grid-column:span 12}
+  .safe-grid{grid-template-columns:1fr}
+  .nav-links a:not(.btn){display:none}
+  section{padding:72px 0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#top" aria-label="Chattrix home"><span class="logo-mark" aria-hidden="true"><i></i><i></i></span>Chattrix</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#safety">Safety</a>
+      <a class="btn btn-sun" href="#try">Start chatting</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1><span>Meet.</span><span>Talk.</span><span>Connect.</span></h1>
+      <p class="lead">Chattrix pairs you with someone new for a text or video chat. Not feeling it? Skip. Something wrong? Report and block in one tap.</p>
+      <div class="hero-cta">
+        <a class="btn btn-sun" href="#try" id="heroStart">Start chatting</a>
+        <a class="btn btn-ghost" href="#safety">See how we keep it safe</a>
+      </div>
+      <p class="hero-note">Free to use. 18 and over only.</p>
+    </div>
+
+    <div id="try">
+      <div class="demo" id="demo" aria-label="Chattrix demo">
+        <div class="modebar">
+          <div class="seg" role="group" aria-label="Chat mode">
+            <button type="button" id="modeVideo" aria-pressed="true">Video</button>
+            <button type="button" id="modeText" aria-pressed="false">Text</button>
+          </div>
+          <div class="camctl">
+            <button class="btn" type="button" id="camBtn" aria-pressed="false">Camera off</button>
+            <button class="btn" type="button" id="micBtn" aria-pressed="false" disabled>Mic off</button>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="tile you" id="youTile">
+            <video id="youVideo" autoplay playsinline muted></video>
+            <div class="avatar" aria-hidden="true">You</div>
+            <span class="tag">You</span>
+          </div>
+          <div class="tile them" id="themTile">
+            <div class="avatar" id="themAvatar" aria-hidden="true">?</div>
+            <div class="scan" id="scan"><div class="dots" aria-hidden="true"><b></b><b></b><b></b></div><span>Finding someone…</span></div>
+            <span class="live">Live</span>
+            <span class="note">Simulated video</span>
+            <span class="tag" id="themTag">Not connected</span>
+          </div>
+        </div>
+        <div class="chat" id="chat" role="log" aria-live="polite">
+          <div class="sys">Press Start to meet someone new.</div>
+        </div>
+        <form class="composer" id="composer" autocomplete="off">
+          <input id="msgInput" type="text" placeholder="Type a message" aria-label="Message" disabled maxlength="300">
+          <button class="btn btn-ink" id="sendBtn" type="submit" disabled>Send</button>
+        </form>
+        <div class="controls">
+          <button class="btn btn-start" id="startBtn" type="button">Start</button>
+          <button class="btn btn-skip" id="skipBtn" type="button" disabled>Next</button>
+          <button class="btn btn-small" id="reportBtn" type="button" disabled>Report</button>
+          <button class="btn btn-small" id="blockBtn" type="button" disabled>Block</button>
+        </div>
+      </div>
+      <p class="demo-label">Interactive preview with simulated partners.</p>
+    </div>
+  </div>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <h2>Three taps from hello</h2>
+    <p class="sec-intro">No long sign-up. Confirm your age, pick text or video, and you're in.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Confirm you're 18+</h3><p>Add a nickname and a few interests. That's your profile.</p></div>
+      <div class="step"><div class="n">2</div><h3>Get matched</h3><p>We pair you with someone available right now, favoring shared interests when we can.</p></div>
+      <div class="step"><div class="n">3</div><h3>Stay or skip</h3><p>Keep talking, or press Next. You can leave any chat instantly, no explanation needed.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <h2>Everything you need to talk to a stranger</h2>
+    <div class="feat-grid">
+      <div class="feat a">
+        <h3>Random matching</h3>
+        <p>One button, one new person. Add interests to meet people who like the same things, or leave it open for a total surprise.</p>
+        <div class="chips"><span class="chip">Music</span><span class="chip">Gaming</span><span class="chip">Travel</span><span class="chip">Film</span><span class="chip">Language practice</span></div>
+      </div>
+      <div class="feat b">
+        <h3>Text or video</h3>
+        <p>Start with text, switch to video when you're both ready. Camera and mic stay off until you turn them on.</p>
+      </div>
+      <div class="feat c">
+        <h3>Next, always</h3>
+        <p>Press Next and you're gone. The other person is never told why.</p>
+      </div>
+      <div class="feat d">
+        <h3>Profiles that stay light</h3>
+        <p>A nickname, an avatar, and your interests. No real name, no phone number, no public history.</p>
+        <div class="chips"><span class="chip">Nickname</span><span class="chip">Avatar</span><span class="chip">Interests</span><span class="chip">Language</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="safety" id="safety">
+  <div class="wrap">
+    <h2>Built so you can leave, report, and stay protected</h2>
+    <p class="sec-intro">Random chat only works when people feel safe. These tools are part of the product, not an afterthought.</p>
+    <div class="safe-grid">
+      <div class="safe-item"><h3>Adults only</h3><p>Chattrix is for people 18 and over. Everyone confirms their age before matching, and accounts that look underage are removed.</p></div>
+      <div class="safe-item"><h3>Report in one tap</h3><p>Choose a reason and send. Reports go to a moderation queue and the chat ends immediately.</p></div>
+      <div class="safe-item"><h3>Block for good</h3><p>Blocked people never get matched with you again.</p></div>
+      <div class="safe-item"><h3>Automated screening</h3><p>Video and text are screened for nudity, harassment, and spam. Repeat offenders are banned from the platform.</p></div>
+      <div class="safe-item"><h3>You control your camera</h3><p>Video is off until you switch it on, and you can turn it off mid-chat.</p></div>
+      <div class="safe-item"><h3>Clear community rules</h3><p>No nudity, hate, threats, or harassment. Never share personal details with someone you've just met.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2>Someone is online right now</h2>
+    <p>Say hello. If it's not a match, press Next.</p>
+    <a class="btn btn-ink" href="#try">Start chatting</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"><i></i><i></i></span>Chattrix</a>
+      <p style="margin-top:8px">Meet. Talk. Connect.</p>
+    </div>
+    <nav aria-label="Footer">
+      <a href="#safety">Safety</a>
+      <a href="#">Community rules</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Age gate -->
+<div class="overlay open" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
+  <div class="modal">
+    <h3 id="ageTitle">Chattrix is for adults</h3>
+    <p>You need to be 18 or older to use Chattrix. By continuing you confirm your age and agree to the community rules.</p>
+    <div class="row">
+      <button class="btn btn-start" id="ageYes" type="button">I'm 18 or older</button>
+      <a class="btn btn-small" href="https://www.google.com" style="border:2px solid var(--lilac);text-decoration:none">Leave</a>
+    </div>
+  </div>
+</div>
+
+<!-- Report -->
+<div class="overlay" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="repTitle">
+  <div class="modal">
+    <h3 id="repTitle">Report this person</h3>
+    <p>The chat will end and our moderators will review it.</p>
+    <div class="reasons">
+      <label><input type="radio" name="reason" value="nudity" checked> Nudity or sexual content</label>
+      <label><input type="radio" name="reason" value="harass"> Harassment or hate</label>
+      <label><input type="radio" name="reason" value="spam"> Spam or scam</label>
+      <label><input type="radio" name="reason" value="minor"> Seems under 18</label>
+    </div>
+    <div class="row">
+      <button class="btn btn-start" id="repSend" type="button">Send report</button>
+      <button class="btn btn-small" id="repCancel" type="button" style="border:2px solid var(--lilac)">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const chat=$('chat'), input=$('msgInput'), sendBtn=$('sendBtn');
+  const startBtn=$('startBtn'), skipBtn=$('skipBtn'), reportBtn=$('reportBtn'), blockBtn=$('blockBtn');
+  const themTile=$('themTile'), themAvatar=$('themAvatar'), themTag=$('themTag');
+
+  const people=[
+    {name:'Maya',colour:'#FFD84A',lines:['Hey! Where are you chatting from?','Same here, honestly. Any good music lately?','Ha, nice. I keep replaying the same three albums.']},
+    {name:'Jonas',colour:'#9BF0C8',lines:['Hi there 👋','I just got back from a hike, still tired.','You should try it. Best way to reset.']},
+    {name:'Priya',colour:'#FFB3A8',lines:['Hello! First time on here?','It is pretty relaxed once you get going.','What do you do when you are not online?']},
+    {name:'Theo',colour:'#C9C6FF',lines:['Hey, how is your day going?','Quiet one here. Good time for a chat.','Any plans for the weekend?']}
+  ];
+  const blocked=new Set();
+  let current=null, timer=null, replyTimer=null, replyIndex=0, lastIdx=-1;
+
+  function sys(text){const d=document.createElement('div');d.className='sys';d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+  function bubble(text,cls){const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+  function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2400)}
+
+  function setConnected(on){
+    input.disabled=sendBtn.disabled=!on;
+    reportBtn.disabled=blockBtn.disabled=!on;
+    themTile.classList.toggle('connected',on);
+  }
+
+  function reset(msg){
+    clearTimeout(timer);clearTimeout(replyTimer);
+    current=null;setConnected(false);
+    themTile.classList.remove('searching');
+    themAvatar.textContent='?';themTile.style.background='';
+    themTag.textContent='Not connected';
+    if(msg) sys(msg);
+  }
+
+  function find(){
+    reset();
+    chat.innerHTML='';
+    startBtn.hidden=true;skipBtn.disabled=false;
+    themTile.classList.add('searching');
+    themTag.textContent='Searching';
+    sys('Looking for someone…');
+    timer=setTimeout(()=>{
+      const pool=people.map((p,i)=>i).filter(i=>!blocked.has(i)&&i!==lastIdx);
+      if(!pool.length){
+        reset('You have blocked everyone in this preview. Reload to start over.');
+        startBtn.hidden=false;skipBtn.disabled=true;return;
+      }
+      const idx=pool[Math.floor(Math.random()*pool.length)];
+      lastIdx=idx;current=idx;replyIndex=0;
+      const p=people[idx];
+      themTile.classList.remove('searching');
+      themAvatar.textContent=p.name[0];
+      themAvatar.style.color='#14123A';
+      themTile.style.background=p.colour;
+      themTag.textContent=p.name;
+      setConnected(true);
+      chat.innerHTML='';
+      sys('You are connected with '+p.name+'. Say hi!');
+      replyTimer=setTimeout(()=>say(),1400);
+    },1600+Math.random()*900);
+  }
+
+  function say(){
+    if(current===null) return;
+    const p=people[current];
+    if(replyIndex<p.lines.length){bubble(p.lines[replyIndex++],'in')}
+  }
+
+  startBtn.addEventListener('click',find);
+  $('heroStart').addEventListener('click',()=>{setTimeout(()=>{if(!current&&!themTile.classList.contains('searching'))find()},400)});
+  skipBtn.addEventListener('click',()=>{if(current!==null) toast('Skipped'); find()});
+
+  $('composer').addEventListener('submit',e=>{
+    e.preventDefault();
+    const v=input.value.trim();
+    if(!v||current===null) return;
+    bubble(v,'out');input.value='';
+    clearTimeout(replyTimer);
+    replyTimer=setTimeout(say,1100+Math.random()*900);
+  });
+
+  // Report
+  const rm=$('reportModal');
+  reportBtn.addEventListener('click',()=>{rm.classList.add('open');$('repSend').focus()});
+  $('repCancel').addEventListener('click',()=>rm.classList.remove('open'));
+  $('repSend').addEventListener('click',()=>{
+    rm.classList.remove('open');
+    const name=people[current].name;
+    blocked.add(current);
+    toast('Report sent. '+name+' is blocked.');
+    reset('Chat ended. Thanks for the report.');
+    startBtn.hidden=false;skipBtn.disabled=true;startBtn.textContent='Find someone new';
+  });
+
+  // Block
+  blockBtn.addEventListener('click',()=>{
+    const name=people[current].name;
+    blocked.add(current);
+    toast(name+' is blocked');
+    reset('You blocked '+name+'. You will not be matched again.');
+    startBtn.hidden=false;skipBtn.disabled=true;startBtn.textContent='Find someone new';
+  });
+
+  // Video mode and camera
+  const demo=$('demo'), youTile=$('youTile'), youVideo=$('youVideo');
+  const camBtn=$('camBtn'), micBtn=$('micBtn'), modeVideo=$('modeVideo'), modeText=$('modeText');
+  let stream=null;
+
+  function setMode(video){
+    demo.classList.toggle('text-mode',!video);
+    themTile.classList.toggle('videoing',video);
+    modeVideo.setAttribute('aria-pressed',video);
+    modeText.setAttribute('aria-pressed',!video);
+    if(!video) stopCam();
+  }
+  async function startCam(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      toast('Your browser does not support camera access');return;
+    }
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});
+      stream.getAudioTracks().forEach(t=>t.enabled=false);
+      youVideo.srcObject=stream;
+      youTile.classList.add('cam-on');
+      camBtn.textContent='Camera on';camBtn.setAttribute('aria-pressed','true');
+      micBtn.disabled=false;micBtn.textContent='Mic off';micBtn.setAttribute('aria-pressed','false');
+    }catch(err){
+      toast(err&&err.name==='NotAllowedError'?'Camera blocked. Allow access in your browser settings.':'No camera found');
+    }
+  }
+  function stopCam(){
+    if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+    youVideo.srcObject=null;
+    youTile.classList.remove('cam-on');
+    camBtn.textContent='Camera off';camBtn.setAttribute('aria-pressed','false');
+    micBtn.disabled=true;micBtn.textContent='Mic off';micBtn.setAttribute('aria-pressed','false');
+  }
+  camBtn.addEventListener('click',()=>stream?stopCam():startCam());
+  micBtn.addEventListener('click',()=>{
+    if(!stream) return;
+    const on=micBtn.getAttribute('aria-pressed')!=='true';
+    stream.getAudioTracks().forEach(t=>t.enabled=on);
+    micBtn.setAttribute('aria-pressed',on);
+    micBtn.textContent=on?'Mic on':'Mic off';
+  });
+  modeVideo.addEventListener('click',()=>setMode(true));
+  modeText.addEventListener('click',()=>setMode(false));
+  setMode(true);
+
+  // Age gate (in memory only)
+  $('ageYes').addEventListener('click',()=>$('ageGate').classList.remove('open'));
+  $('ageYes').focus();
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') rm.classList.remove('open')});
+})();
+</script>
+</body>
+</html>
